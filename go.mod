@@ -10,6 +10,7 @@ require (
 	github.com/tektoncd/plumbing v0.0.0-20200430135134-e53521e1d887
 	golang.org/x/xerrors v0.0.0-20191204190536-9bdfabe68543
 	k8s.io/api v0.17.6
+	k8s.io/apiextensions-apiserver v0.17.4
 	k8s.io/apimachinery v0.17.6
 	k8s.io/client-go v12.0.0+incompatible
 	sigs.k8s.io/controller-runtime v0.5.2

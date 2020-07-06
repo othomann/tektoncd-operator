@@ -11,7 +11,7 @@ import (
 
 	"github.com/operator-framework/operator-sdk/pkg/test"
 	"github.com/operator-framework/operator-sdk/pkg/test/e2eutil"
-	op "github.com/tektoncd/operator/pkg/apis/operator/v1alpha1"
+	op "github.com/tektoncd/operator/pkg/apis/kuberntes/operator/v1alpha1"
 	"github.com/tektoncd/operator/test/tektonpipeline"
 	"k8s.io/apimachinery/pkg/runtime"
 	"k8s.io/apimachinery/pkg/types"

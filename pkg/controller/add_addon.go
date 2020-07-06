@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"github.com/tektoncd/operator/pkg/controller/addon"
+	"github.com/tektoncd/operator/pkg/controller/kubernetes/addon"
 )
 
 func init() {

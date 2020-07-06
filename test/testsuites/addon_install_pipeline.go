@@ -6,9 +6,9 @@ import (
 	"time"
 
 	"github.com/operator-framework/operator-sdk/pkg/test/e2eutil"
-	"github.com/tektoncd/operator/pkg/apis/operator/v1alpha1"
-	"github.com/tektoncd/operator/pkg/controller/addon"
-	"github.com/tektoncd/operator/pkg/controller/setup"
+	"github.com/tektoncd/operator/pkg/apis/kuberntes/operator/v1alpha1"
+	"github.com/tektoncd/operator/pkg/controller/kubernetes/addon"
+	"github.com/tektoncd/operator/pkg/controller/kubernetes/setup"
 	v1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 
 	"github.com/operator-framework/operator-sdk/pkg/test"

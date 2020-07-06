@@ -4,8 +4,8 @@ import (
 	"testing"
 
 	"github.com/operator-framework/operator-sdk/pkg/test"
-	op "github.com/tektoncd/operator/pkg/apis/operator/v1alpha1"
-	"github.com/tektoncd/operator/pkg/controller/setup"
+	op "github.com/tektoncd/operator/pkg/apis/kuberntes/operator/v1alpha1"
+	"github.com/tektoncd/operator/pkg/controller/kubernetes/setup"
 	"github.com/tektoncd/operator/test/helpers"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 )

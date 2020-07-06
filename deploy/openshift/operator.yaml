@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: openshift-pipelines-operator
+  namespace: openshift-operators
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: openshift-pipelines-operator
+  template:
+    metadata:
+      labels:
+        name: openshift-pipelines-operator
+    spec:
+      serviceAccountName: openshift-pipelines-operator
+      containers:
+      - name: openshift-pipelines-operator
+        image: quay.io/openshift-pipeline/openshift-pipelines-operator:v0.11.2
+        command:
+        - openshift-pipelines-operator
+        - --recursive
+        imagePullPolicy: Always
+        env:
+        - name: WATCH_NAMESPACE
+          value: ""
+        - name: IMAGE_ADDONS_PARAM_KN_IMAGE
+          value: registry.redhat.io/openshift-serverless-1/client-kn-rhel8
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OPERATOR_NAME
+          value: "openshift-pipelines-operator"

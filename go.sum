@@ -533,8 +533,6 @@ github.com/mailru/easyjson v0.0.0-20190626092158-b2ccc519800e/go.mod h1:C1wdFJiN
 github.com/mailru/easyjson v0.7.0/go.mod h1:KAzv3t3aY1NaHWoQz1+4F1ccyAH66Jk7yos7ldAVICs=
 github.com/manifestival/controller-runtime-client v0.2.0 h1:Zqmtcd+VCov+T89nMERuQD5rb1xumscTZ5Vb2+M3V4s=
 github.com/manifestival/controller-runtime-client v0.2.0/go.mod h1:xK5vtLpVxkFQKIFk4ABGln7fpUKVf2UHybbP9wPWetw=
-github.com/manifestival/manifestival v0.0.0 h1:LLS8LsRU3HuTCvi7jDr15TrkT1BsSZ/hhj9zyuy3eHk=
-github.com/manifestival/manifestival v0.0.0/go.mod h1:jlYRi+Y1LEGR94OSBXU887tNJ7Y317sHd/DcNAHE2eI=
 github.com/manifestival/manifestival v0.5.0 h1:x598dwb6O/1J4KHSBKs4PXD/dIaku95vRsiacuGBvKE=
 github.com/manifestival/manifestival v0.5.0/go.mod h1:jlYRi+Y1LEGR94OSBXU887tNJ7Y317sHd/DcNAHE2eI=
 github.com/maorfr/helm-plugin-utils v0.0.0-20200216074820-36d2fcf6ae86/go.mod h1:p3gwmRSFqbWw6plBpR0sKl3n3vpu8kX70gvCJKMvvCA=
