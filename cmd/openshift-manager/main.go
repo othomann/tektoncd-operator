@@ -17,6 +17,7 @@ import (
 	"errors"
 	"flag"
 	"fmt"
+	k8sruntime "k8s.io/apimachinery/pkg/runtime"
 	"os"
 	"runtime"
 	"strings"
@@ -25,9 +26,6 @@ import (
 	_ "k8s.io/client-go/plugin/pkg/client/auth"
 	"k8s.io/client-go/rest"
 
-	"github.com/tektoncd/operator/pkg/apis"
-	"github.com/tektoncd/operator/pkg/controller"
-
 	"github.com/operator-framework/operator-sdk/pkg/k8sutil"
 	kubemetrics "github.com/operator-framework/operator-sdk/pkg/kube-metrics"
 	"github.com/operator-framework/operator-sdk/pkg/leader"
@@ -35,6 +33,10 @@ import (
 	"github.com/operator-framework/operator-sdk/pkg/metrics"
 	sdkVersion "github.com/operator-framework/operator-sdk/version"
 	"github.com/spf13/pflag"
+	"github.com/tektoncd/operator/pkg/apis"
+	openshiftv1alpha1 "github.com/tektoncd/operator/pkg/apis/openshift/operator/v1alpha1"
+	configctrl "github.com/tektoncd/operator/pkg/controller/openshift/config"
+	rbacctrl "github.com/tektoncd/operator/pkg/controller/openshift/rbac"
 	v1 "k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/util/intstr"
 	"sigs.k8s.io/controller-runtime/pkg/cache"
@@ -51,6 +53,8 @@ var (
 	operatorMetricsPort int32 = 8686
 )
 var log = logf.Log.WithName("cmd")
+
+type controllerAddFuncs []func(manager.Manager)error
 
 func printVersion() {
 	log.Info(fmt.Sprintf("Go Version: %s", runtime.Version()))
@@ -124,16 +128,22 @@ func main() {
 		os.Exit(1)
 	}
 
-	log.Info("Registering Components.")
+	log.Info("Registering OpenShift Components.")
+	var AddToSchemes k8sruntime.SchemeBuilder
+	AddToSchemes = append(AddToSchemes, openshiftv1alpha1.SchemeBuilder.AddToScheme)
 
 	// Setup Scheme for all resources
-	if err := apis.AddToScheme(mgr.GetScheme()); err != nil {
+	if err := AddToSchemes.AddToScheme(mgr.GetScheme()); err != nil {
 		log.Error(err, "")
 		os.Exit(1)
 	}
 
 	// Setup all Controllers
-	if err := controller.AddToManager(mgr); err != nil {
+	ctrls := controllerAddFuncs{
+		rbacctrl.Add,
+		configctrl.Add,
+	}
+	if err := addToManager(mgr, ctrls); err != nil {
 		log.Error(err, "")
 		os.Exit(1)
 	}
@@ -216,6 +226,16 @@ func serveCRMetrics(cfg *rest.Config, operatorNs string) error {
 	err = kubemetrics.GenerateAndServeCRMetrics(cfg, ns, filteredGVK, metricsHost, operatorMetricsPort)
 	if err != nil {
 		return err
+	}
+	return nil
+}
+
+// addToManager adds all Controllers to the Manager
+func addToManager(m manager.Manager, ctrls controllerAddFuncs) error {
+	for _, f := range ctrls {
+		if err := f(m); err != nil {
+			return err
+		}
 	}
 	return nil
 }
