@@ -127,7 +127,7 @@ export BUNDLE_ARGS="--workspace operatorhub/openshift \
              --upgrade-strategy-replaces \
              --operator-release-previous-version ${RHOSP_PREVIOUS_VERSION} \
              --olm-skip-range ${OLM_SKIP_RANGE}"
-
+rm -rf operatorhub/openshift/release-artifacts/bundle || true
 make operator-bundle
 
 git add openshift OWNERS_ALIASES OWNERS cmd/openshift/operator/kodata config operatorhub/openshift
