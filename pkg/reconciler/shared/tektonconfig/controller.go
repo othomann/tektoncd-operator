@@ -21,6 +21,7 @@ import (
 	"os"
 	"regexp"
 
+	"github.com/tektoncd/operator/pkg/webhook"
 	"knative.dev/pkg/kmeta"
 
 	"k8s.io/apimachinery/pkg/types"
@@ -39,11 +40,16 @@ import (
 	"knative.dev/pkg/controller"
 	"knative.dev/pkg/injection"
 	"knative.dev/pkg/logging"
+
 )
 
 // NewExtensibleController returns a controller extended to a specific platform
 func NewExtensibleController(generator common.ExtensionGenerator) injection.ControllerConstructor {
 	return func(ctx context.Context, cmw configmap.Watcher) *controller.Impl {
+
+		// create webhook resources
+		webhook.CreateWebhookResources(ctx)
+
 		logger := logging.FromContext(ctx)
 
 		c := &Reconciler{

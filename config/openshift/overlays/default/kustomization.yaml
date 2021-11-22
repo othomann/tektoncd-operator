@@ -9,5 +9,5 @@ patches:
     kind: Deployment
     name: tekton-operator-webhook
 
-patchesStrategicMerge:
-- 500-webhooks.yaml
+#patchesStrategicMerge:
+#- 500-webhooks.yaml
