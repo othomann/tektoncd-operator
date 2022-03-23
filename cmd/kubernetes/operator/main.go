@@ -17,26 +17,15 @@ limitations under the License.
 package main
 
 import (
-	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/tektonchain"
-	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/tektonconfig"
-	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/tektondashboard"
-	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/tektonhub"
-	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/tektoninstallerset"
-	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/tektonpipeline"
-	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/tektonresult"
-	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/tektontrigger"
-	"knative.dev/pkg/injection/sharedmain"
+	"github.com/tektoncd/operator/pkg/reconciler/kubernetes/kubernetesplatform"
+	"github.com/tektoncd/operator/pkg/reconciler/platform"
 )
 
 func main() {
-	sharedmain.Main("tekton-operator",
-		tektonconfig.NewController,
-		tektonpipeline.NewController,
-		tektontrigger.NewController,
-		tektondashboard.NewController,
-		tektonresult.NewController,
-		tektoninstallerset.NewController,
-		tektonhub.NewController,
-		tektonchain.NewController,
-	)
+
+	pConfig := platform.NewConfigFromFlags()
+	p := kubernetesplatform.NewKubernetesPlatform(pConfig)
+
+	platform.EnableControllers(p)
+	platform.StartMain(p)
 }
