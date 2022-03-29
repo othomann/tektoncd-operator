@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"knative.dev/pkg/injection/sharedmain"
-	"log"
 	"strings"
 )
 
@@ -31,9 +30,13 @@ func ValidateControllerNames(cNames []ControllerName, supported ControllerMap) e
 		}
 	}
 	if len(invalidNames.String()) != 0 {
-		return fmt.Errorf("un-identified controller names: %s, supported names: %v", invalidNames.String(), supported.Keys())
+		return errorMsg(invalidNames.String(), supported.Keys())
 	}
 	return nil
+}
+
+func errorMsg(invalidNames string, validNames []ControllerName) error {
+	return fmt.Errorf("un-identified controller names: %s supported names: %v", invalidNames, validNames)
 }
 
 func ContextWithPlatformName(pName string) context.Context {
@@ -45,8 +48,6 @@ func ContextWithPlatformName(pName string) context.Context {
 func StartMain(p Platform) {
 	pParams := p.PlatformParams()
 	//ctx := ContextWithPlatformName(pParams.Name)
-	log.Printf("sharedMainName: %v\n", pParams.SharedMainName)
-	log.Printf("asdfasdfcontrollers: %v\n", pParams.ControllerNames)
 	sharedmain.Main(pParams.SharedMainName,
 		p.ActiveControllers()...,
 	)
