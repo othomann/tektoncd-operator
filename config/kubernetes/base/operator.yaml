@@ -27,9 +27,11 @@ spec:
         name: tekton-operator
         app: tekton-operator
     spec:
+      volumes: []
       serviceAccountName: tekton-operator
       containers:
       - name: tekton-operator
+        volumeMounts: []
         image: ko://github.com/tektoncd/operator/cmd/kubernetes/operator
         imagePullPolicy: Always
         env:

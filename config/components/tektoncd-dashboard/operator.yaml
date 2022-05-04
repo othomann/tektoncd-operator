@@ -1,0 +1,22 @@
+- op: add
+  path: "/spec/template/spec/volumes/0"
+  value:
+    name: tektoncd-dashboard-readonly
+    configMap:
+      name: tektoncd-dashboard-readonly
+- op: add
+  path: "/spec/template/spec/volumes/0"
+  value:
+    name: tektoncd-dashboard-fullaccess
+    configMap:
+      name: tektoncd-dashboard-fullaccess
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    mountPath: /var/run/ko/tekton-dashboard/tekton-dashboard-readonly/0.0.0-latest/
+    name: tektoncd-dashboard-readonly
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    mountPath: /var/run/ko/tekton-dashboard/tekton-dashboard-fullaccess/0.0.0-latest/
+    name: tektoncd-dashboard-fullaccess

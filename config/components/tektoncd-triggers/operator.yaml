@@ -1,0 +1,11 @@
+- op: add
+  path: "/spec/template/spec/volumes/0"
+  value:
+    name: tektoncd-trigger-release
+    configMap:
+      name: tektoncd-trigger-release
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    mountPath: /var/run/ko/tekton-trigger/0.0.0-latest/
+    name: tektoncd-trigger-release

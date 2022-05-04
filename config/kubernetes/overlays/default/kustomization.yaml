@@ -2,3 +2,8 @@ namespace: tekton-operator
 resources:
 - ../../base/
 - service_account.yaml
+
+components:
+  - ../../../components/tektoncd-pipeline
+  - ../../../components/tektoncd-triggers
+  - ../../../components/tektoncd-dashboard

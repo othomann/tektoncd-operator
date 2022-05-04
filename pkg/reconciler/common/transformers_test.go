@@ -331,7 +331,7 @@ func deploymentFor(t *testing.T, unstr unstructured.Unstructured) *appsv1.Deploy
 }
 
 func TestReplaceNamespaceInDeploymentEnv(t *testing.T) {
-	testData := path.Join("testdata", "test-replace-env-in-result-deployment.yaml")
+	testData := path.Join("testdata", "test-replace-env-in-result-operator.yaml")
 	manifest, err := mf.ManifestFrom(mf.Recursive(testData))
 	assertNoEror(t, err)
 
@@ -348,7 +348,7 @@ func TestReplaceNamespaceInDeploymentEnv(t *testing.T) {
 }
 
 func TestReplaceNamespaceInDeploymentArgs(t *testing.T) {
-	testData := path.Join("testdata", "test-replace-arg-in-result-deployment.yaml")
+	testData := path.Join("testdata", "test-replace-arg-in-result-operator.yaml")
 	manifest, err := mf.ManifestFrom(mf.Recursive(testData))
 	assertNoEror(t, err)
 

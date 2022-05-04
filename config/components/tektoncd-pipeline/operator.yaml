@@ -1,0 +1,11 @@
+- op: add
+  path: "/spec/template/spec/volumes/0"
+  value:
+    name: tektoncd-pipeline-release
+    configMap:
+      name: tektoncd-pipeline-release
+- op: add
+  path: /spec/template/spec/containers/0/volumeMounts/-
+  value:
+    mountPath: /var/run/ko/tekton-pipeline/0.0.0-latest/
+    name: tektoncd-pipeline-release

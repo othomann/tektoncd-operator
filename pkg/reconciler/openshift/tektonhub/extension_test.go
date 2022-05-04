@@ -28,7 +28,7 @@ import (
 )
 
 func TestUpdateDbDeployment(t *testing.T) {
-	testData := path.Join("testdata", "update-db-deployment.yaml")
+	testData := path.Join("testdata", "update-db-operator.yaml")
 
 	manifest, err := mf.ManifestFrom(mf.Recursive(testData))
 	assert.NilError(t, err)

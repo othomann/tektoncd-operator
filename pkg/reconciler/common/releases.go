@@ -138,6 +138,7 @@ func sanitizeSemver(version string) string {
 func allReleases(instance v1alpha1.TektonComponent) ([]string, error) {
 	// List all the directories available under kodata
 	pathname := ComponentDir(instance)
+	fmt.Println("all releases print", pathname)
 	fileList, err := ioutil.ReadDir(pathname)
 	if err != nil {
 		return nil, err
