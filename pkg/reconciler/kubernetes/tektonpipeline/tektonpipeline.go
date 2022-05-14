@@ -20,6 +20,8 @@ import (
 	"context"
 	"fmt"
 
+	"github.com/tektoncd/operator/pkg/reconciler/common/targetnamespace"
+
 	mf "github.com/manifestival/manifestival"
 	"github.com/tektoncd/operator/pkg/apis/operator/v1alpha1"
 	clientset "github.com/tektoncd/operator/pkg/client/clientset/versioned"
@@ -101,6 +103,16 @@ func (r *Reconciler) FinalizeKind(ctx context.Context, original *v1alpha1.Tekton
 		return err
 	}
 
+	targetNS := targetnamespace.NewTargetNamespaceManager(r.kubeClientSet.CoreV1().Namespaces(), v1alpha1.OperandTektoncdPipeline, original.GetSpec().GetTargetNamespace())
+
+	err = targetNS.RemoveNamespaceInUseLabel(ctx)
+	if err != nil {
+		return err
+	}
+	err = targetNS.DeleteNamespaceIfNoOtherUsers(ctx)
+	if err != nil {
+		return err
+	}
 	if err := r.extension.Finalize(ctx, original); err != nil {
 		logger.Error("Failed to finalize platform resources", err)
 	}
@@ -394,6 +406,7 @@ func (r *Reconciler) transform(ctx context.Context, manifest *mf.Manifest, comp 
 		common.ApplyProxySettings,
 		common.DeploymentImages(images),
 		common.InjectLabelOnNamespace(proxyLabel),
+		targetnamespace.InjectNamespaceInUseLabel(instance.GetSpec().GetTargetNamespace(), v1alpha1.OperandTektoncdPipeline),
 		common.AddConfiguration(pipeline.Spec.Config),
 	}
 	trns = append(trns, extra...)

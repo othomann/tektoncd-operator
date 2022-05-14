@@ -54,11 +54,32 @@ const (
 // transformers that are common to all components.
 func transformers(ctx context.Context, obj v1alpha1.TektonComponent) []mf.Transformer {
 	return []mf.Transformer{
-		mf.InjectOwner(obj),
+		InjectOwnerReferenceSkipTargetNamespace(ctx, obj),
 		injectNamespaceConditional(AnnotationPreserveNS, obj.GetSpec().GetTargetNamespace()),
 		injectNamespaceCRDWebhookClientConfig(obj.GetSpec().GetTargetNamespace()),
 		injectNamespaceCRClusterInterceptorClientConfig(obj.GetSpec().GetTargetNamespace()),
 		injectNamespaceClusterRole(obj.GetSpec().GetTargetNamespace()),
+	}
+}
+
+func InjectOwnerReferenceSkipTargetNamespace(ctx context.Context, obj v1alpha1.TektonComponent) mf.Transformer {
+	targetNS := obj.GetSpec().GetTargetNamespace()
+	filteroutTargetNamespacePredicate := []mf.Predicate{
+		mf.Not(mf.ByKind("Namespace")),
+		mf.Not(mf.ByName(targetNS)),
+	}
+	return InjectOwnerReferenceWithCondition(obj, filteroutTargetNamespacePredicate...)
+}
+
+func InjectOwnerReferenceWithCondition(owner mf.Owner, conditions ...mf.Predicate) mf.Transformer {
+	tf := mf.InjectOwner(owner)
+	return func(u *unstructured.Unstructured) error {
+		for _, condition := range conditions {
+			if !condition(u) {
+				return nil
+			}
+		}
+		return tf(u)
 	}
 }
 

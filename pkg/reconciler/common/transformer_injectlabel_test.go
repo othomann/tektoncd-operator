@@ -1,12 +1,13 @@
 package common
 
 import (
+	"path/filepath"
+	"testing"
+
 	"github.com/google/go-cmp/cmp"
 	mf "github.com/manifestival/manifestival"
 	"gotest.tools/v3/assert"
 	"k8s.io/apimachinery/pkg/labels"
-	"path/filepath"
-	"testing"
 )
 
 func TestInjectOperandNameLabel(t *testing.T) {
@@ -35,29 +36,29 @@ func TestInjectLabel(t *testing.T) {
 		testDataPath       string
 		labels             labels.Set
 		preserveExisting   bool
-		skipChecks         []mf.Predicate
+		conditions         []mf.Predicate
 		expectedOutputPath string
 	}{
 		{
-			description:  "add labels to all resources when no skipChecks are provided",
+			description:  "add labels to all resources when no conditions are provided",
 			testDataPath: "inject-label/01-sample-tektoncd-pipelines-release.yaml",
 			labels: labels.Set{
 				"foo": "bar",
 			},
 			preserveExisting:   false,
-			skipChecks:         nil,
+			conditions:         nil,
 			expectedOutputPath: "inject-label/02-no-predicates-test-expected-result.yaml",
 		},
 		{
-			description:  "add labels to resources skipping the ones which pass skip predicates provided",
+			description:  "add labels to resources skipping the ones which pass condition predicates provided",
 			testDataPath: "inject-label/01-sample-tektoncd-pipelines-release.yaml",
 			labels: labels.Set{
 				"foo": "bar",
 			},
 			preserveExisting: false,
-			skipChecks: []mf.Predicate{
-				mf.ByName("tekton-pipelines-controller"),
-				mf.ByKind("Service"),
+			conditions: []mf.Predicate{
+				mf.Not(mf.ByName("tekton-pipelines-controller")),
+				mf.Not(mf.ByKind("Service")),
 			},
 			expectedOutputPath: "inject-label/03-with-skipchecks-test-expected-result.yaml",
 		},
@@ -68,7 +69,7 @@ func TestInjectLabel(t *testing.T) {
 				"foo": "new_val",
 			},
 			preserveExisting:   true,
-			skipChecks:         []mf.Predicate{},
+			conditions:         []mf.Predicate{},
 			expectedOutputPath: "inject-label/06-existing-labels-release-expected.yaml",
 		},
 	}
@@ -78,7 +79,7 @@ func TestInjectLabel(t *testing.T) {
 			inputManifest, err := mf.ManifestFrom(mf.Recursive(inPath))
 			assert.NilError(t, err)
 
-			tr := injectLabel(tc.labels, tc.preserveExisting, tc.skipChecks...)
+			tr := injectLabel(tc.labels, tc.preserveExisting, tc.conditions...)
 
 			got, err := inputManifest.Transform(tr)
 			assert.NilError(t, err)

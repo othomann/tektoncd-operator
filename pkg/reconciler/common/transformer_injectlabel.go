@@ -28,20 +28,20 @@ func injectOperandNameLabel(operandName string, preserveExisting bool) mf.Transf
 	return InjectLabelOverwriteExisting(l)
 }
 
-func InjectLabelPreserveExisting(newLabels labels.Set, skipChecks ...mf.Predicate) mf.Transformer {
+func InjectLabelPreserveExisting(newLabels labels.Set, conditions ...mf.Predicate) mf.Transformer {
 	preserverExisting := true
-	return injectLabel(newLabels, preserverExisting, skipChecks...)
+	return injectLabel(newLabels, preserverExisting, conditions...)
 }
 
-func InjectLabelOverwriteExisting(newLabels labels.Set, skipChecks ...mf.Predicate) mf.Transformer {
+func InjectLabelOverwriteExisting(newLabels labels.Set, conditions ...mf.Predicate) mf.Transformer {
 	preserverExisting := false
-	return injectLabel(newLabels, preserverExisting, skipChecks...)
+	return injectLabel(newLabels, preserverExisting, conditions...)
 }
 
-func injectLabel(newLabels labels.Set, preserverExisting bool, skipChecks ...mf.Predicate) mf.Transformer {
+func injectLabel(newLabels labels.Set, preserverExisting bool, conditions ...mf.Predicate) mf.Transformer {
 	return func(u *unstructured.Unstructured) error {
-		for _, skipCheck := range skipChecks {
-			if skipCheck(u) {
+		for _, condition := range conditions {
+			if !condition(u) {
 				return nil
 			}
 		}
