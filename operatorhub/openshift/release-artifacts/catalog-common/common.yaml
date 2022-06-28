@@ -1,0 +1,11 @@
+---
+schema: olm.channel
+package: openshift-pipelines-operator-rh
+name: alpha
+entries:
+  - name: openshift-pipelines-operator-rh.v0.60.0
+---
+defaultChannel: alpha
+description: "Tekton framework"
+name: openshift-pipelines-operator-rh
+schema: olm.package

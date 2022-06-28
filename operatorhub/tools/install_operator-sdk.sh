@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 function operator_sdk_latest_version() {
   releases_url='https://api.github.com/repos/operator-framework/operator-sdk/releases'

@@ -35,11 +35,11 @@ metadata:
     certified: 'false'
     description: Tekton Pipelines is a Kubernetes-Native CI/CD solution for building
       CI/CD pipelines.
-    operators.operatorframework.io/builder: operator-sdk-v1.21.0
+    operators.operatorframework.io/builder: operator-sdk-v1.19.0+git
     operators.operatorframework.io/project_layout: unknown
     repository: https://github.com/tektoncd/operator
     support: The Tetkon Authors
-  name: tektoncd-operator.v0.59.0
+  name: tektoncd-operator.v0.60.0
   namespace: placeholder
 spec:
   apiservicedefinitions: {}
@@ -795,8 +795,8 @@ spec:
         serviceAccountName: tekton-operator
       deployments:
       - label:
-          operator.tekton.dev/release: v0.59.0
-          version: v0.59.0
+          operator.tekton.dev/release: v0.60.0
+          version: v0.60.0
         name: tekton-operator
         spec:
           replicas: 1
@@ -811,7 +811,12 @@ spec:
                 name: tekton-operator
             spec:
               containers:
-              - env:
+              - args:
+                - -controllers
+                - tektonconfig,tektonpipeline,tektontrigger,tektonhub,tektonchain,tektonresults,tektondashboard
+                - -unique-process-name
+                - tekton-operator-lifecycle
+                env:
                 - name: SYSTEM_NAMESPACE
                   valueFrom:
                     fieldRef:
@@ -823,13 +828,13 @@ spec:
                 - name: OPERATOR_NAME
                   value: tekton-operator
                 - name: IMAGE_PIPELINES_PROXY
-                  value: gcr.io/tekton-releases/github.com/tektoncd/operator/cmd/kubernetes/proxy-webhook@sha256:c2c3a38c2d26fc05d336e0e47c24a488a26cc6df8d72cd55e00ac05668d090d4
+                  value: gcr.io/tekton-releases/github.com/tektoncd/operator/cmd/kubernetes/proxy-webhook@sha256:09fb2b1a97bcd4cb3f0278cec0ece101aeacb59b2253045a4b971e3ac880a6c0
                 - name: IMAGE_JOB_PRUNER_TKN
                   value: gcr.io/tekton-releases/dogfooding/tkn@sha256:025de221fb059ca24a3b2d988889ea34bce48dc76c0cf0d6b4499edb8c21325f
                 - name: METRICS_DOMAIN
                   value: tekton.dev/operator
                 - name: VERSION
-                  value: v0.59.0
+                  value: v0.60.0
                 - name: CONFIG_OBSERVABILITY_NAME
                   value: tekton-config-observability
                 - name: AUTOINSTALL_COMPONENTS
@@ -842,14 +847,38 @@ spec:
                     configMapKeyRef:
                       key: DEFAULT_TARGET_NAMESPACE
                       name: tekton-config-defaults
-                image: gcr.io/tekton-releases/github.com/tektoncd/operator/cmd/kubernetes/operator@sha256:e5e6cbf5c56a3c62136ac71e478a26fa93067ced6334929f99a82cfd2d726674
+                image: gcr.io/tekton-releases/github.com/tektoncd/operator/cmd/kubernetes/operator@sha256:22ca40497d6f820d6b2034905f30d9c13fc46cc3e113dadbe332d00656648a70
                 imagePullPolicy: Always
-                name: tekton-operator
+                name: tekton-operator-lifecycle
+                resources: {}
+              - args:
+                - -controllers
+                - tektoninstallerset
+                - -unique-process-name
+                - tekton-operator-cluster-operations
+                env:
+                - name: SYSTEM_NAMESPACE
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.namespace
+                - name: POD_NAME
+                  valueFrom:
+                    fieldRef:
+                      fieldPath: metadata.name
+                - name: OPERATOR_NAME
+                  value: tekton-operator
+                - name: PROFILING_PORT
+                  value: '9009'
+                - name: VERSION
+                  value: v0.60.0
+                image: gcr.io/tekton-releases/github.com/tektoncd/operator/cmd/kubernetes/operator@sha256:22ca40497d6f820d6b2034905f30d9c13fc46cc3e113dadbe332d00656648a70
+                imagePullPolicy: Always
+                name: tekton-operator-cluster-operations
                 resources: {}
               serviceAccountName: tekton-operator
       - label:
-          operator.tekton.dev/release: v0.59.0
-          version: v0.59.0
+          operator.tekton.dev/release: v0.60.0
+          version: v0.60.0
         name: tekton-operator-webhook
         spec:
           replicas: 1
@@ -877,7 +906,7 @@ spec:
                   value: tekton-operator-webhook-certs
                 - name: METRICS_DOMAIN
                   value: tekton.dev/operator
-                image: gcr.io/tekton-releases/github.com/tektoncd/operator/cmd/kubernetes/webhook@sha256:24b94e84b9edecd6f98581f4921832a2a1deae13ed9b2308f985eb86f29149b8
+                image: gcr.io/tekton-releases/github.com/tektoncd/operator/cmd/kubernetes/webhook@sha256:aa13f702ea1b0fa8bf6ccd7c2b99eeebe15f8df26ad2b80ea2f24a9f5b35b211
                 name: tekton-operator-webhook
                 ports:
                 - containerPort: 8443
@@ -915,4 +944,4 @@ spec:
   maturity: alpha
   provider:
     name: The Tekton Authors
-  version: 0.59.0
+  version: 0.60.0

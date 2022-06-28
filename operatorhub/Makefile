@@ -2,7 +2,7 @@ BUNDLE_ARGS := $(or ${BUNDLE_ARGS},--help)
 
 BIN = $(CURDIR)/.bin
 
-OPERATOR_SDK = $(or ${OPERATOR_SDK_BIN},$(BIN)/operator-sdk)
+OPERATOR_SDK =/usr/local/bin/operator-sdk
 
 $(BIN):
 	@mkdir -p $@

@@ -1,0 +1,11 @@
+---
+schema: olm.channel
+package: tektoncd-operator
+name: alpha
+entries:
+  - name: tektoncd-operator.v0.60.0
+---
+defaultChannel: alpha
+description: "Tekton framework"
+name: tektoncd-operator
+schema: olm.package
