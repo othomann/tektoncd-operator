@@ -15,4 +15,4 @@ opm render $BUNDLE_IMG --output yaml >> catalog/operator.yaml
 opm validate catalog
 
 docker build . -f catalog.Dockerfile -t $CATALOG_IMG
-docker push $CATALOG_IMG
+#docker push $CATALOG_IMG
